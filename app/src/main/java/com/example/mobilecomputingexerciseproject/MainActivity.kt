@@ -10,16 +10,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.mobilecomputingexerciseproject.ui.login.LoginScreen
 import com.example.mobilecomputingexerciseproject.ui.theme.MobileComputingExerciseProjectTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MobileComputingExerciseProjectTheme {
+            MobileComputingExerciseProjectTheme (
+                darkTheme = true
+            )
+            {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    LoginScreen(modifier = Modifier.fillMaxSize())
                 }
             }
         }
