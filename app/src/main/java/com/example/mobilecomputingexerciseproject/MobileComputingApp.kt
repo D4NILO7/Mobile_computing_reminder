@@ -22,7 +22,7 @@ fun MobileComputingApp (
             Login(navController = appState.navController)
         }
         composable(route = "home"){
-            Home()
+            Home(navController = appState.navController)
         }
         composable(route = "profile"){
             Profile (onBackPress = {appState.navigateBack()})

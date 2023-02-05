@@ -62,7 +62,7 @@ fun Login (
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = { navController.navigate("profile") },
+                onClick = { navController.navigate("home") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape( corner = CornerSize(20.dp)),
                 contentPadding = PaddingValues(20.dp)
