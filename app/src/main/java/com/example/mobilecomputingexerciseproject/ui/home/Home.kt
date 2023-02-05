@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mobilecomputingexerciseproject.ui.home.categoryReminder.CategoryReminder
 
 @Composable
 fun Home(
@@ -102,7 +103,7 @@ fun Home(
                 }
             )
 
-
+            CategoryReminder()
 
         }
     }
