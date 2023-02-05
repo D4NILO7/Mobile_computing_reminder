@@ -1,10 +1,13 @@
 package com.example.mobilecomputingexerciseproject
 
+import android.provider.ContactsContract
+import android.provider.ContactsContract.Profile
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mobilecomputingexerciseproject.ui.home.Home
 import com.example.mobilecomputingexerciseproject.ui.login.Login
+import com.example.mobilecomputingexerciseproject.ui.profile.Profile
 
 
 @Composable
@@ -20,6 +23,9 @@ fun MobileComputingApp (
         }
         composable(route = "home"){
             Home()
+        }
+        composable(route = "profile"){
+            Profile (onBackPress = {appState.navigateBack()})
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.example.mobilecomputingexerciseproject.ui.login
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,11 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mobilecomputingexerciseproject.R
 
 @Composable
 fun Login (
@@ -65,7 +62,7 @@ fun Login (
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = { navController.navigate("home") },
+                onClick = { navController.navigate("profile") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape( corner = CornerSize(20.dp)),
                 contentPadding = PaddingValues(20.dp)
