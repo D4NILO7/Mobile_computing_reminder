@@ -88,7 +88,7 @@ fun CreateTopBar(
                 ){
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        tint = Color.Green,
+                        tint = Color(0xFF00C6CF),
                         contentDescription = null
                     )
                 } },

@@ -137,8 +137,8 @@ fun RegisterUser(
                                 modifier = Modifier
                                     .width(40.dp)
                                     .border(
-                                        1.dp,
-                                        Color.Green,
+                                        2.dp,
+                                        Color(0xFF00C6CF),
                                         RoundedCornerShape(8.dp)
                                     )
                                     .padding(2.dp),
@@ -165,19 +165,29 @@ fun RegisterUser(
                             confirmPassword = confirmPassword
                         )
                     ) {
-                        if (checkPassword(password = password, confirmPassword= confirmPassword)){
+                        if (checkPassword(password = password, confirmPassword = confirmPassword)) {
+                            Toast.makeText(context, "Account created", Toast.LENGTH_LONG).show()
                             navController.navigate("home")
-                        }else{
-                            Toast.makeText(context,"Passwords are not matching", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(context, "Passwords are not matching", Toast.LENGTH_LONG)
+                                .show()
                         }
                     } else {
-                        Toast.makeText(context,"Please make sure all fields are filled", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            "Please make sure all fields are filled",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
 
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(corner = CornerSize(20.dp)),
-                contentPadding = PaddingValues(20.dp)
+                contentPadding = PaddingValues(20.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF00C6CF),
+                    contentColor = Color.Black
+                )
             ) {
                 Text(text = "Confirm Registration")
             }
@@ -195,12 +205,12 @@ fun RegisterUser(
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(
                 onClick = { navController.navigate("login") },
-                border = BorderStroke(1.dp, Color.Green),
+                border = BorderStroke(1.dp, Color(0xFF00C6CF)),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(corner = CornerSize(20.dp)),
                 contentPadding = PaddingValues(20.dp)
             ) {
-                Text(text = "Login")
+                Text(text = "Login", color = Color(0xFF00C6CF), fontWeight = FontWeight.Bold)
             }
         }
     }

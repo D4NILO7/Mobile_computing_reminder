@@ -10,9 +10,9 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.text.font.FontWeight.Companion.Black
 
 private val DarkColorPalette = darkColors(
-        primary = Color.Green,
-        primaryVariant = Color.Green,
-        secondary = Color.Green,
+        primary = Color(0xFF00C6CF),
+        primaryVariant = Color(0xFF00C6CF),
+        secondary = Color(0xFF00C6CF),
         background = Color.Black,
 )
 
