@@ -1,6 +1,7 @@
 package com.example.mobilecomputingexerciseproject
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import com.example.mobilecomputingexerciseproject.ui.theme.MobileComputingExerci
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setContent {
             MobileComputingExerciseProjectTheme (
                 darkTheme = true

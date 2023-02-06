@@ -3,10 +3,7 @@ package com.example.mobilecomputingexerciseproject.ui.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,6 +25,24 @@ fun Home(
         mutableStateOf(false)
     }
     Surface {
+        Scaffold(
+            modifier = Modifier.padding(bottom = 24.dp),
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { /*TODO*/ },
+                    contentColor = Color.Green,
+                    modifier = Modifier.padding(all = 20.dp)
+                ){
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = Color.Black,
+                    )
+                }
+            }
+        ) {
+
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -96,8 +111,6 @@ fun Home(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-
-                            //Text("Log out", color = Color.Red, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
