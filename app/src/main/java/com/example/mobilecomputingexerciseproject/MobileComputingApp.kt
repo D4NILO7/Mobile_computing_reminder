@@ -16,7 +16,7 @@ fun MobileComputingApp (
 ){
     NavHost(
         navController = appState.navController,
-        startDestination = "login"
+        startDestination = "profile"
     ){
         composable(route = "login"){
             Login(navController = appState.navController)
@@ -25,7 +25,7 @@ fun MobileComputingApp (
             Home(navController = appState.navController)
         }
         composable(route = "profile"){
-            Profile (onBackPress = {appState.navigateBack()})
+            Profile (navController = appState.navController)
         }
     }
 }
