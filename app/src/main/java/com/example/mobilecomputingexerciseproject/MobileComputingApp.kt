@@ -16,7 +16,7 @@ fun MobileComputingApp (
 ){
     NavHost(
         navController = appState.navController,
-        startDestination = "profile"
+        startDestination = "login"
     ){
         composable(route = "login"){
             Login(navController = appState.navController)

@@ -57,9 +57,9 @@ fun Profile(
                 Row(
                 ) {
                     Text("Daniel ", fontSize = 32.sp, fontWeight = FontWeight.Bold)
-                    Text(" Tisza", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                    Text("Tisza", fontSize = 32.sp, fontWeight = FontWeight.Bold)
                 }
-                Text("@Danilo004", fontSize = 24.sp)
+                Text("#Danilo004", fontSize = 24.sp)
                 Spacer(modifier = Modifier.height(32.dp))
                 Text("danieltisza23@gmail.com", fontSize = 24.sp)
 
