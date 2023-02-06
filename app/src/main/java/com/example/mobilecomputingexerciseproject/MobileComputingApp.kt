@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mobilecomputingexerciseproject.ui.home.Home
 import com.example.mobilecomputingexerciseproject.ui.login.Login
+import com.example.mobilecomputingexerciseproject.ui.login.RegisterUser
 import com.example.mobilecomputingexerciseproject.ui.profile.Profile
 
 
@@ -16,7 +17,7 @@ fun MobileComputingApp (
 ){
     NavHost(
         navController = appState.navController,
-        startDestination = "login"
+        startDestination = "registerUser"
     ){
         composable(route = "login"){
             Login(navController = appState.navController)
@@ -26,6 +27,9 @@ fun MobileComputingApp (
         }
         composable(route = "profile"){
             Profile (navController = appState.navController)
+        }
+        composable(route = "registerUser"){
+            RegisterUser(navController = appState.navController)
         }
     }
 }

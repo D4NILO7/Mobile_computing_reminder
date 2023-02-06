@@ -91,7 +91,7 @@ fun Home(
 
                         DropdownMenuItem(
                             onClick = {
-                                navController.navigate("profile")
+                                navController.navigate("login")
                                 dropDownMenuExpanded = false
                             }) {
                             Row(
