@@ -17,9 +17,6 @@ class AuthViewModel: ViewModel(){
     private val _userSignUpStatus = MutableStateFlow<UserSignUpStatus?>(null)
     val userSignUpStatus = _userSignUpStatus.asStateFlow()
 
-    init {
-        createAccount("danieltisza23@gmail.com", "123456789")
-    }
 
     fun performLogin(email: String, password: String){
         FirebaseAuthRepo.login(

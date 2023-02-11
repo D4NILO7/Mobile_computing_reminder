@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mobilecomputingexerciseproject.viewmodel.AuthViewModel
 import com.example.mobilecomputingexerciseproject.viewmodel.UserLoginStatus
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun Login(
@@ -34,8 +35,8 @@ fun Login(
 
     val loginStatus by authViewModel.userLoginStatus.collectAsState()
 
-    LaunchedEffect(key1 = loginStatus){
-        when(loginStatus){
+    LaunchedEffect(key1 = loginStatus) {
+        when (loginStatus) {
             is UserLoginStatus.Failure -> {
             }
             UserLoginStatus.Successful -> {
@@ -47,7 +48,6 @@ fun Login(
     }
 
     Surface(modifier = Modifier.fillMaxSize()) {
-
 
 
         Column(
@@ -130,7 +130,7 @@ fun Login(
                         }
                     }
                 },
-                onSignUpClick = {  }
+                onSignUpClick = { navController.navigate("registerUser")}
             ) {
 
             }
@@ -172,7 +172,9 @@ fun LoginFooter(
     }
     Spacer(modifier = Modifier.height(8.dp))
     OutlinedButton(
-        onClick = { onSignUpClick() },
+        onClick = {
+            onSignUpClick()
+        },
         border = BorderStroke(2.dp, Color(0xFF00C6CF)),
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(corner = CornerSize(20.dp)),
@@ -182,6 +184,6 @@ fun LoginFooter(
     }
 }
 
-private fun Context.showToast(msg: String){
+private fun Context.showToast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }

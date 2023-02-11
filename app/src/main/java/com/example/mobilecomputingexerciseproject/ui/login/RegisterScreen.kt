@@ -19,22 +19,42 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.mobilecomputingexerciseproject.viewmodel.AuthViewModel
+import com.example.mobilecomputingexerciseproject.viewmodel.UserLoginStatus
+import com.example.mobilecomputingexerciseproject.viewmodel.UserSignUpStatus
 
 @Composable
 fun RegisterUser(
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        val username = remember { mutableStateOf("") }
-        val firstName = remember { mutableStateOf("") }
-        val lastName = remember { mutableStateOf("") }
-        val email = remember { mutableStateOf("") }
-        val password = remember { mutableStateOf("") }
-        val confirmPassword = remember { mutableStateOf("") }
-        var otpValue by remember {
-            mutableStateOf("")
+    val username = remember { mutableStateOf("") }
+    val firstName = remember { mutableStateOf("") }
+    val lastName = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val confirmPassword = remember { mutableStateOf("") }
+    var otpValue by remember {
+        mutableStateOf("")
+    }
+
+    val signUpStatus by authViewModel.userSignUpStatus.collectAsState()
+
+    LaunchedEffect(key1 = signUpStatus){
+        when(signUpStatus){
+            is UserSignUpStatus.Failure -> {
+            }
+            UserSignUpStatus.Successful -> {
+                navController.navigate("home")
+            }
+            null -> {
+            }
         }
+    }
+
+    Surface(modifier = Modifier.fillMaxSize()) {
 
         Column(
             modifier = Modifier
@@ -166,8 +186,7 @@ fun RegisterUser(
                         )
                     ) {
                         if (checkPassword(password = password, confirmPassword = confirmPassword)) {
-                            Toast.makeText(context, "Account created", Toast.LENGTH_LONG).show()
-                            navController.navigate("home")
+                            authViewModel.createAccount(email.value, password.value)
                         } else {
                             Toast.makeText(context, "Passwords are not matching", Toast.LENGTH_LONG)
                                 .show()

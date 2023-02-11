@@ -25,12 +25,16 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.example.mobilecomputingexerciseproject.R
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
 fun Profile(
     navController: NavController
 ){
+    var fAuth = FirebaseAuth.getInstance()
+    println(fAuth)
+
     Surface(modifier = Modifier.fillMaxHeight()){
         Column(
 
