@@ -1,5 +1,7 @@
 package com.example.mobilecomputingexerciseproject.ui.login
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -24,6 +26,11 @@ import androidx.navigation.NavController
 import com.example.mobilecomputingexerciseproject.viewmodel.AuthViewModel
 import com.example.mobilecomputingexerciseproject.viewmodel.UserLoginStatus
 import com.example.mobilecomputingexerciseproject.viewmodel.UserSignUpStatus
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun RegisterUser(
@@ -40,13 +47,30 @@ fun RegisterUser(
         mutableStateOf("")
     }
 
+    val db = Firebase.firestore
+    val user = hashMapOf(
+        "userName" to username.value,
+        "firstName" to firstName.value,
+        "lastName" to lastName.value,
+        "email" to email.value,
+    )
+
+
     val signUpStatus by authViewModel.userSignUpStatus.collectAsState()
+    var fAuth = FirebaseAuth.getInstance()
 
     LaunchedEffect(key1 = signUpStatus){
         when(signUpStatus){
             is UserSignUpStatus.Failure -> {
             }
             UserSignUpStatus.Successful -> {
+                db.collection("users").document(fAuth.uid.toString()).set(user)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "DocumentSnapshot added with ID: ${fAuth.uid}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error adding document", e)
+                    }
                 navController.navigate("home")
             }
             null -> {
