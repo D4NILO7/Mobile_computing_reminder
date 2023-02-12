@@ -10,6 +10,7 @@ import com.example.mobilecomputingexerciseproject.ui.login.Login
 import com.example.mobilecomputingexerciseproject.ui.login.PinLogin
 import com.example.mobilecomputingexerciseproject.ui.login.RegisterUser
 import com.example.mobilecomputingexerciseproject.ui.profile.Profile
+import com.example.mobilecomputingexerciseproject.ui.reminderUI.CreateReminder
 
 
 @Composable
@@ -18,7 +19,7 @@ fun MobileComputingApp (
 ){
     NavHost(
         navController = appState.navController,
-        startDestination = "login"
+        startDestination = "createReminder"
     ){
         composable(route = "login"){
             Login(navController = appState.navController)
@@ -34,6 +35,9 @@ fun MobileComputingApp (
         }
         composable(route = "pinLogin"){
             PinLogin(navController = appState.navController)
+        }
+        composable(route = "createReminder"){
+            CreateReminder(navController = appState.navController)
         }
     }
 }

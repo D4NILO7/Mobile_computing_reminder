@@ -24,25 +24,20 @@ fun Home(
     var dropDownMenuExpanded by remember {
         mutableStateOf(false)
     }
-    Surface {
-        Scaffold(
-            modifier = Modifier.padding(bottom = 24.dp),
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { /*TODO*/ },
-                    contentColor = Color.Green,
-                    modifier = Modifier.padding(all = 20.dp)
-                ){
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        tint = Color.Black,
-                    )
-                }
-            }
-        ) {
 
+    Scaffold(
+        modifier = Modifier.padding(bottom = 24.dp),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("createReminder") },
+            ){
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                )
+            }
         }
+    ){
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -120,6 +115,7 @@ fun Home(
 
         }
     }
+
 }
 
 @Composable

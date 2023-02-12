@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mobilecomputingexerciseproject.R
+import com.example.mobilecomputingexerciseproject.ui.uiElements.CreateTopBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -51,7 +52,7 @@ fun Profile(
     Surface(modifier = Modifier.fillMaxHeight()) {
         Column(
         ) {
-            CreateTopBar(navController = navController)
+            CreateTopBar(navController = navController, "Profile", true)
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 96.dp)
@@ -82,46 +83,5 @@ fun Profile(
             }
 
         }
-    }
-}
-
-@Composable
-fun CreateTopBar(
-    navController: NavController
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-
-    ) {
-        TopAppBar(
-            title = {
-                Text(text = "Profile")
-            },
-            navigationIcon = {
-                IconButton(
-                    onClick = { navController.navigate("home") }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        tint = Color(0xFF00C6CF),
-                        contentDescription = null
-                    )
-                }
-            },
-            actions = {
-                IconButton(
-                    onClick = { navController.navigate("login") }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ExitToApp,
-                        tint = Color.Red,
-                        contentDescription = null,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-
-            }
-        )
     }
 }
