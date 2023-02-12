@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.mobilecomputingexerciseproject.ui.profile.ProfileClass
 import com.example.mobilecomputingexerciseproject.viewmodel.AuthViewModel
 import com.example.mobilecomputingexerciseproject.viewmodel.UserLoginStatus
 import com.example.mobilecomputingexerciseproject.viewmodel.UserSignUpStatus
@@ -48,12 +49,7 @@ fun RegisterUser(
     }
 
     val db = Firebase.firestore
-    val user = hashMapOf(
-        "userName" to username.value,
-        "firstName" to firstName.value,
-        "lastName" to lastName.value,
-        "email" to email.value,
-    )
+    val user = ProfileClass()
 
 
     val signUpStatus by authViewModel.userSignUpStatus.collectAsState()
@@ -64,6 +60,10 @@ fun RegisterUser(
             is UserSignUpStatus.Failure -> {
             }
             UserSignUpStatus.Successful -> {
+                user.userName = username.value
+                user.firstName = firstName.value
+                user.lastName = lastName.value
+                user.email = email.value
                 db.collection("users").document(fAuth.uid.toString()).set(user)
                     .addOnSuccessListener {
                         Log.d(TAG, "DocumentSnapshot added with ID: ${fAuth.uid}")
