@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,12 +22,13 @@ import androidx.navigation.NavController
 fun CreateTopBar(
     navController: NavController,
     header: String,
-    logOutIcon: Boolean
+    logOutIcon: Boolean,
+    submitButton: Boolean,
+    submitAction: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
     ) {
         TopAppBar(
             title = {
@@ -44,6 +46,8 @@ fun CreateTopBar(
                 }
             },
             actions = {
+
+                //logout icon for profile reminder
                 if (logOutIcon) {
                     IconButton(
                         onClick = { navController.navigate("login") }
@@ -53,6 +57,21 @@ fun CreateTopBar(
                             tint = Color.Red,
                             contentDescription = null,
                             modifier = Modifier.size(40.dp)
+                        )
+                    }
+
+                }
+
+                //submit icon for create,edit reminder
+                if (submitButton) {
+                    IconButton(
+                        onClick = { submitAction()}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            tint = Color(0xFF00C6CF),
+                            contentDescription = null,
+                            modifier = Modifier.size(36.dp)
                         )
                     }
                 }

@@ -30,14 +30,14 @@ fun Home(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate("createReminder") },
-            ){
+            ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
                 )
             }
         }
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,10 +76,32 @@ fun Home(
                                     contentDescription = "ProfileIcon",
                                 )
                                 Text(
-                                    " Profile",
+                                    "Profile",
                                     modifier = Modifier
                                         .width(100.dp)
 
+                                )
+                            }
+                        }
+
+                        DropdownMenuItem(
+                            onClick = {
+                                navController.navigate("createReminder")
+                                dropDownMenuExpanded = false
+                            }) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Icon(
+                                    painter = rememberVectorPainter(Icons.Filled.Add),
+                                    contentDescription = "AddReminderIcon",
+                                )
+                                Text(
+                                    " Add reminder",
+                                    modifier = Modifier
+                                        .width(130.dp),
+                                    //fontWeight = FontWeight.Bold
                                 )
                             }
                         }
@@ -99,7 +121,7 @@ fun Home(
                                     tint = Color.Red
                                 )
                                 Text(
-                                    " Log Out",
+                                    "Log Out",
                                     modifier = Modifier
                                         .width(100.dp),
                                     color = Color.Red,

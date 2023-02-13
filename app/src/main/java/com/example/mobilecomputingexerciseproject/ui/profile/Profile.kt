@@ -48,40 +48,40 @@ fun Profile(
             email.value = userProfile?.email.toString()
         }
 
-
-    Surface(modifier = Modifier.fillMaxHeight()) {
+    Column(
+    ) {
+        CreateTopBar(navController = navController, "Profile",
+            logOutIcon = true,
+            submitButton = false,
+            submitAction = {})
         Column(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 96.dp)
+                .fillMaxSize()
+                .background(Color(0xFF3E4445)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            CreateTopBar(navController = navController, "Profile", true)
-            Column(
+
+            Image(
+                painter = painterResource(id = R.drawable.profile_picture),
+                contentDescription = null,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 96.dp)
-                    .fillMaxSize()
-                    .background(Color(0xFF3E4445)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .size(200.dp)
+                    .clip(CircleShape),
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+            Row(
             ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.profile_picture),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(200.dp)
-                        .clip(CircleShape),
-                )
-
-                Spacer(modifier = Modifier.height(18.dp))
-                Row(
-                ) {
-                    Text(firstName.value, fontSize = 32.sp, fontWeight = FontWeight.Bold)
-                    Text(lastName.value, fontSize = 32.sp, fontWeight = FontWeight.Bold)
-                }
-                Text("#${username.value}", fontSize = 24.sp)
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(email.value, fontSize = 24.sp)
-
+                Text(firstName.value, fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                Text(lastName.value, fontSize = 32.sp, fontWeight = FontWeight.Bold)
             }
+            Text("#${username.value}", fontSize = 24.sp)
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(email.value, fontSize = 24.sp)
 
         }
+
     }
 }
