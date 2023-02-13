@@ -2,31 +2,28 @@ package com.example.mobilecomputingexerciseproject.ui.reminderUI
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ContentValues
+import android.util.Log
 import android.widget.DatePicker
-import android.widget.Toast
 import androidx.compose.foundation.*
-import androidx.compose.foundation.MagnifierStyle.Companion.Default
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.Color.Companion.Yellow
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.mobilecomputingexerciseproject.reminder.Reminder
 import com.example.mobilecomputingexerciseproject.ui.uiElements.CreateTopBar
-import com.example.mobilecomputingexerciseproject.ui.uiElements.DropdownMenuUi
-import java.time.format.TextStyle
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -46,7 +43,7 @@ fun CreateReminder(
         CreateTopBar(navController = navController, "Add reminder",
             logOutIcon = false,
             submitButton = checkFields(message.value, mDate.value, mTime.value),
-            submitAction = {})
+            submitAction = { submitReminder(message = message.value, reminderPriority = selectedItem, reminderTime = createReminderDate(mDate.value, mTime.value) )})
 
         Column(modifier = Modifier.padding(20.dp)) {
             TextField(
@@ -81,11 +78,25 @@ fun CreateReminder(
             // Value for storing time as a string
 
             // Creating a TimePicker dialod
+            var mHourString = ""
+            var mMinuteString = ""
             val mTimePickerDialog = TimePickerDialog(
                 mContext,
                 { _, mHour: Int, mMinute: Int ->
-                    mTime.value = "$mHour:$mMinute"
-                }, mHour, mMinute, true
+                    if(mHour < 10) {
+                        mHourString = "0$mHour"
+                    }else {
+                        mHourString = "$mHour"
+                    }
+
+                    if(mMinute < 10) {
+                        mMinuteString = "0$mMinute"
+                    }else {
+                        mMinuteString = "$mMinute"
+                    }
+
+                    mTime.value = "$mHourString:$mMinuteString"
+                }, mHour, mMinute, false
             )
 
             Button(
@@ -122,10 +133,24 @@ fun CreateReminder(
 
             // Declaring DatePickerDialog and setting
             // initial values as current values (present year, month and day)
+            var mMonthString = ""
+            var mDayOfMonthString = ""
+
             val mDatePickerDialog = DatePickerDialog(
                 mContext,
                 { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-                    mDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
+                    if (mMonth < 10){
+                        mMonthString = "0${mMonth+1}"
+                    }else {
+                        mMonthString = "${mMonth+1}"
+                    }
+
+                    if (mDayOfMonth < 10){
+                        mDayOfMonthString = "0$mDayOfMonth"
+                    }else {
+                        mDayOfMonthString = "$mDayOfMonth"
+                    }
+                    mDate.value = "$mDayOfMonthString-${mMonthString}-$mYear"
                 }, mYear, mMonth, mDay
             )
 
@@ -221,4 +246,49 @@ fun checkFields(
         return true
     }
     return false
+}
+
+fun createReminderDate(
+    date: String,
+    hours: String
+):Date{
+
+    val testDate = "${date},${hours}:00"
+//    val testDate = date.plus(",").plus(hours).plus(":00")
+    println(testDate)
+    val formatter: DateFormat = SimpleDateFormat("d-mm-yyyy,HH:mm:ss")
+    val resultDate: Date = formatter.parse(testDate)
+
+    return resultDate
+}
+
+fun submitReminder (
+    message: String,
+    reminderTime: java.util.Date,
+    reminderPriority:String
+) {
+
+    var fAuth = FirebaseAuth.getInstance()
+
+    val reminder = Reminder(
+        message = message,
+        locationX = "",
+        locationY = "",
+        creationTime = java.util.Date(),
+        reminderTime = reminderTime,
+        userId = fAuth.uid.toString(),
+        reminderSeen = false,
+        reminderPriority = reminderPriority
+    )
+
+    val db = Firebase.firestore
+    db.collection("reminders").document().set(reminder)
+        .addOnSuccessListener {
+            Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${fAuth.uid}")
+        }
+        .addOnFailureListener { e ->
+            Log.w(ContentValues.TAG, "Error adding document", e)
+        }
+
+
 }
