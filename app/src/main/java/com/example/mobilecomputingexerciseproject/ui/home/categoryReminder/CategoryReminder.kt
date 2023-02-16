@@ -17,7 +17,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mobilecomputingexerciseproject.ui.data.entity.Reminder
+import com.example.mobilecomputingexerciseproject.reminder.Reminder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -69,7 +69,7 @@ private fun ReminderListItem(
         )
         //--------------------------------------------- title
         Text(
-            text = reminder.reminderTitle,
+            text = reminder.message,
             maxLines = 1,
             style = MaterialTheme.typography.subtitle1,
             modifier = Modifier.constrainAs(reminderTitle){
@@ -86,7 +86,7 @@ private fun ReminderListItem(
         )
         //-------------------------------------------- category
         Text(
-            text = reminder.reminderCategory,
+            text = reminder.reminderPriority,
             maxLines = 1,
             style = MaterialTheme.typography.subtitle2,
             modifier = Modifier.constrainAs(reminderCategory){
@@ -103,9 +103,25 @@ private fun ReminderListItem(
             }
         )
         //--------------------------------------------- date
+        var hours = ""
+        if(reminder.reminderTime.hours < 10) {
+            hours = "0" + reminder.reminderTime.hours.toString()
+        }else{
+            hours = reminder.reminderTime.hours.toString()
+        }
+
+        var minutes = ""
+        if(reminder.reminderTime.minutes < 10) {
+            minutes = "0" + reminder.reminderTime.minutes.toString()
+        }else{
+            minutes = reminder.reminderTime.minutes.toString()
+        }
+        // reminder.reminderTime.formatToString()
         Text(
             text = when {
-                reminder.reminderDate !=null -> { reminder.reminderDate.formatToString()}
+                reminder.reminderTime !=null -> {
+                    "$hours:$minutes"
+                }
                 else -> Date().formatToString()
             },
             maxLines = 1,

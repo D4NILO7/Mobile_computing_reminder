@@ -43,9 +43,21 @@ fun CreateReminder(
         CreateTopBar(navController = navController, "Add reminder",
             logOutIcon = false,
             submitButton = checkFields(message.value, mDate.value, mTime.value),
-            submitAction = { submitReminder(message = message.value, reminderPriority = selectedItem, reminderTime = createReminderDate(mDate.value, mTime.value) )})
+            submitAction = { submitReminder(message = message.value, reminderPriority = selectedItem, reminderTime = createReminderDate(mDate.value, mTime.value) , navController = navController)})
 
-        Column(modifier = Modifier.padding(20.dp)) {
+//        Column(modifier = Modifier.padding(20.dp)) {
+//
+//        }
+
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
+
+            ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = message.value,
@@ -53,17 +65,6 @@ fun CreateReminder(
                 label = { Text(text = "Title", fontSize = 16.sp, color = Color.White) },
                 textStyle = androidx.compose.ui.text.TextStyle(Color(0xFF00C6CF), fontSize = 24.sp, fontWeight = FontWeight.Bold )
             )
-        }
-
-        Column(
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxSize(),
-                //.verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-
-            ) {
 
             Spacer(modifier = Modifier.height(24.dp))
             //PICK REMINDER TIME
@@ -265,7 +266,8 @@ fun createReminderDate(
 fun submitReminder (
     message: String,
     reminderTime: java.util.Date,
-    reminderPriority:String
+    reminderPriority:String,
+    navController: NavController
 ) {
 
     var fAuth = FirebaseAuth.getInstance()
@@ -285,6 +287,7 @@ fun submitReminder (
     db.collection("reminders").document().set(reminder)
         .addOnSuccessListener {
             Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${fAuth.uid}")
+            navController.navigate("home")
         }
         .addOnFailureListener { e ->
             Log.w(ContentValues.TAG, "Error adding document", e)
