@@ -71,7 +71,7 @@ fun Profile(
             Spacer(modifier = Modifier.height(18.dp))
             Row(
             ) {
-                Text(firstName.value, fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                Text(firstName.value + " ", fontSize = 32.sp, fontWeight = FontWeight.Bold)
                 Text(lastName.value, fontSize = 32.sp, fontWeight = FontWeight.Bold)
             }
             Text("#${username.value}", fontSize = 24.sp)

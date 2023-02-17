@@ -1,5 +1,6 @@
 package com.example.mobilecomputingexerciseproject.ui.home.categoryReminder
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,8 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -59,46 +63,76 @@ private fun ReminderListItem(
         .fillMaxWidth()
         .clickable { onClick() }) {
 
-        val (divider, reminderTitle, reminderCategory, icon, date) = createRefs()
+        val (divider, column, reminderTitle, reminderDate, icon, reminderHoursAndMinutes) = createRefs()
         Divider(
-            Modifier.fillMaxWidth().constrainAs(divider){
-                top.linkTo(parent.top)
-                centerHorizontallyTo(parent)
-                width = Dimension.fillToConstraints
-            }
+            Modifier
+                .fillMaxWidth()
+                .constrainAs(divider) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                    width = Dimension.fillToConstraints
+                }
         )
+
+        Column (
+            modifier = Modifier.constrainAs(column){
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+                end.linkTo(reminderHoursAndMinutes.start)
+                width = Dimension.value(24.dp)
+                height= Dimension.value(64.dp)
+            }
+                .background(
+                    if (reminder.reminderPriority == "Low"){
+                        Color(0xFF1AAA55)
+                    }else if (reminder.reminderPriority == "Medium"){
+                        Color(0xFFFC9403)
+                    }else{
+                        Color(0xFFDB3B21)
+                    }
+                )
+        ){
+
+        }
+
         //--------------------------------------------- title
         Text(
             text = reminder.message,
             maxLines = 1,
-            style = MaterialTheme.typography.subtitle1,
+            style = TextStyle(fontSize = 20.sp),
             modifier = Modifier.constrainAs(reminderTitle){
-                linkTo(
-                    start = parent.start,
+/*                linkTo(
+                    start = reminderHoursAndMinutes.start,
                     end = icon.start,
-                    startMargin = 24.dp,
+                    startMargin = 56.dp,
                     endMargin = 16.dp,
                     bias = 0f
-                )
+                )*/
+                //centerHorizontallyTo(parent)
                 top.linkTo(parent.top, margin = 10.dp)
+                bottom.linkTo(parent.bottom, margin = 10.dp)
+                start.linkTo(reminderHoursAndMinutes.end, margin = 24.dp)
+                end.linkTo(icon.start, margin = 24.dp)
                 width = Dimension.preferredWrapContent
             }
         )
-        //-------------------------------------------- category
+        //-------------------------------------------- date
         Text(
-            text = reminder.reminderPriority,
+            text = reminder.reminderTime.formatToString(),
             maxLines = 1,
             style = MaterialTheme.typography.subtitle2,
-            modifier = Modifier.constrainAs(reminderCategory){
-                linkTo(
+            modifier = Modifier.constrainAs(reminderDate){
+/*                linkTo(
                     start = parent.start,
-                    end = icon.start,
+                    end = reminderTitle.start,
                     startMargin = 24.dp,
                     endMargin = 8.dp,
                     bias = 0f
-                )
-                top.linkTo(reminderTitle.bottom, margin = 6.dp)
-                bottom.linkTo(parent.bottom, 10.dp)
+                )*/
+                start.linkTo(column.end, margin = 20.dp)
+                top.linkTo(parent.top, margin = 10.dp)
+                bottom.linkTo(reminderHoursAndMinutes.top, 10.dp)
                 width = Dimension.preferredWrapContent
             }
         )
@@ -126,18 +160,19 @@ private fun ReminderListItem(
             },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.caption,
-            modifier = Modifier.constrainAs(date){
-                linkTo(
-                    start = reminderCategory.end,
-                    end = icon.start,
-                    startMargin = 8.dp,
-                    endMargin = 16.dp,
-                    bias = 0f
+            style = TextStyle(fontSize = 24.sp),
+            modifier = Modifier.constrainAs(reminderHoursAndMinutes){
+                //linkTo(
+                    //start = parent.start,
+                    //end = reminderTitle.start,
+                    //startMargin = 8.dp,
+                    //endMargin = 16.dp,
+                  //  bias = 0f
 
-                )
-                centerVerticallyTo(reminderCategory)
-                top.linkTo(reminderTitle.bottom, 6.dp)
+                //)
+                //centerVerticallyTo(reminderTime)
+                start.linkTo(column.end, 20.dp)
+                top.linkTo(reminderDate.bottom, 6.dp)
                 bottom.linkTo(parent.bottom,10.dp)
             }
         )
@@ -147,7 +182,7 @@ private fun ReminderListItem(
             modifier = Modifier
                 .size(50.dp)
                 .padding(6.dp)
-                .constrainAs(icon){
+                .constrainAs(icon) {
                     top.linkTo(parent.top, 10.dp)
                     bottom.linkTo(parent.bottom, 10.dp)
                     end.linkTo(parent.end)
@@ -163,5 +198,5 @@ private fun ReminderListItem(
 
 
 private fun Date.formatToString(): String {
-    return SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(this)
+    return SimpleDateFormat("MMMM dd", Locale.getDefault()).format(this)
 }
