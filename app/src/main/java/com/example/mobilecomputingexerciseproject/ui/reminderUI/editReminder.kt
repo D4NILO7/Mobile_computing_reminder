@@ -5,19 +5,25 @@ import android.app.TimePickerDialog
 import android.content.ContentValues
 import android.util.Log
 import android.widget.DatePicker
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mobilecomputingexerciseproject.reminder.Reminder
+import com.example.mobilecomputingexerciseproject.ui.profile.ProfileClass
 import com.example.mobilecomputingexerciseproject.ui.uiElements.CreateTopBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -28,9 +34,12 @@ import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CreateReminder(
-    navController: NavController
+fun EditReminder(
+    navController: NavController,
+    reminderId: String
 ) {
+
+    var reminder: Reminder? = null
     val message = remember { mutableStateOf("") }
     val mDate = remember { mutableStateOf("") }
     val mTime = remember { mutableStateOf("") }
@@ -38,6 +47,32 @@ fun CreateReminder(
     var selectedItem by remember {
         mutableStateOf(listItems[1])
     }
+    var fetched = remember { mutableStateOf(false) }
+
+    val db = Firebase.firestore
+    val docRef = db.collection("reminders").document(reminderId)
+    val formatter: DateFormat = SimpleDateFormat("dd-MM-yyyy,HH:mm:ss")
+
+    if (!fetched.value) {
+        docRef.get()
+            .addOnSuccessListener { snapShots ->
+                reminder = snapShots.toObject(Reminder::class.java)
+                message.value = reminder?.message.toString()
+                if (reminder?.reminderPriority.toString() == "High") {
+                    selectedItem = listItems[0]
+                } else if (reminder?.reminderPriority.toString() == "Medium") {
+                    selectedItem = listItems[1]
+                } else {
+                    selectedItem = listItems[2]
+                }
+                val dateHelper = formatter.format(reminder?.reminderTime)
+                mDate.value = dateHelper.substring(0, dateHelper.indexOf(","))
+                mTime.value =
+                    dateHelper.substring(dateHelper.indexOf(",") + 1, dateHelper.length - 3)
+                fetched.value = true
+            }
+    }
+
 
     //PICK REMINDER TIME
 
@@ -116,7 +151,8 @@ fun CreateReminder(
                     message = message.value,
                     reminderPriority = selectedItem,
                     reminderTime = createReminderDate(mDate.value, mTime.value),
-                    navController = navController
+                    navController = navController,
+                    reminderId = reminderId
                 )
             })
 
@@ -134,7 +170,7 @@ fun CreateReminder(
                 value = message.value,
                 onValueChange = { text -> message.value = text },
                 label = { Text(text = "Title", fontSize = 16.sp, color = Color.White) },
-                textStyle = androidx.compose.ui.text.TextStyle(
+                textStyle = TextStyle(
                     Color(0xFF00C6CF),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
@@ -222,10 +258,7 @@ fun CreateReminder(
                             )
                         },
                         colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                        textStyle = androidx.compose.ui.text.TextStyle(
-                            fontSize = 24.sp,
-                            color = Color(0xFF00C6CF)
-                        ),
+                        textStyle = TextStyle(fontSize = 24.sp, color = Color(0xFF00C6CF)),
                         modifier = Modifier.fillMaxWidth()
 
                     )
@@ -247,10 +280,46 @@ fun CreateReminder(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = {
+
+                        db.collection("reminders").document(reminderId)
+                            .delete()
+                            .addOnSuccessListener {
+                                Log.d(
+                                    ContentValues.TAG,
+                                    "DocumentSnapshot successfully deleted!"
+                                )
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(
+                                    ContentValues.TAG,
+                                    "Error deleting document",
+                                    e
+                                )
+                            }
+
+                        navController.navigate("home")
+
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(corner = CornerSize(20.dp)),
+                    contentPadding = PaddingValues(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFFDB3B21)
+                    )
+                ) {
+                    Text(text = "Delete")
+                }
+
+
             }
         }
     }
+
 }
+
 
 private fun checkFields(
     title: String?,
@@ -277,11 +346,13 @@ private fun createReminderDate(
     return resultDate
 }
 
+
 private fun submitReminder(
     message: String,
     reminderTime: java.util.Date,
     reminderPriority: String,
-    navController: NavController
+    navController: NavController,
+    reminderId: String
 ) {
 
     var fAuth = FirebaseAuth.getInstance()
@@ -290,7 +361,7 @@ private fun submitReminder(
         message = message,
         locationX = "",
         locationY = "",
-        creationTime = java.util.Date(),
+        creationTime = Date(),
         reminderTime = reminderTime,
         userId = fAuth.uid.toString(),
         reminderSeen = false,
@@ -299,7 +370,7 @@ private fun submitReminder(
     )
 
     val db = Firebase.firestore
-    db.collection("reminders").document().set(reminder)
+    db.collection("reminders").document(reminderId).set(reminder)
         .addOnSuccessListener {
             Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${fAuth.uid}")
             navController.navigate("home")

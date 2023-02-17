@@ -133,7 +133,7 @@ fun Home(
                 }
             )
 
-            CategoryReminder()
+            CategoryReminder(navController)
 
         }
     }

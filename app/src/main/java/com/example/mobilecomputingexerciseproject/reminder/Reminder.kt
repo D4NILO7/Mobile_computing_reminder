@@ -8,5 +8,6 @@ data class Reminder(
     val reminderTime: java.util.Date = java.util.Date(),
     val userId:String = "",
     val reminderSeen: Boolean = false,
-    val reminderPriority: String = ""
+    val reminderPriority: String = "",
+    val reminderId: String = ""
 )
