@@ -143,7 +143,7 @@ fun EditReminder(
     )
 
     Column(modifier = Modifier.fillMaxHeight()) {
-        CreateTopBar(navController = navController, "Add reminder",
+        CreateTopBar(navController = navController, "Edit reminder",
             logOutIcon = false,
             submitButton = checkFields(message.value, mDate.value, mTime.value),
             submitAction = {

@@ -1,8 +1,10 @@
 package com.example.mobilecomputingexerciseproject.ui.reminderUI
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
 import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.widget.DatePicker
 import androidx.compose.foundation.*
@@ -16,15 +18,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.NotificationManagerCompat.from
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavController
+import androidx.work.*
+import com.example.mobilecomputingexerciseproject.R
 import com.example.mobilecomputingexerciseproject.reminder.Reminder
 import com.example.mobilecomputingexerciseproject.ui.uiElements.CreateTopBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -107,6 +117,8 @@ fun CreateReminder(
         }, mYear, mMonth, mDay
     )
 
+    createNotificationChannel(context = mContext)
+
     Column(modifier = Modifier.fillMaxHeight()) {
         CreateTopBar(navController = navController, "Add reminder",
             logOutIcon = false,
@@ -118,6 +130,7 @@ fun CreateReminder(
                     reminderTime = createReminderDate(mDate.value, mTime.value),
                     navController = navController
                 )
+                setOneTimeNotification(context = mContext, createReminderDate(mDate.value, mTime.value).time.toLong())
             })
 
         Column(
@@ -308,5 +321,61 @@ private fun submitReminder(
             Log.w(ContentValues.TAG, "Error adding document", e)
         }
 
+}
 
+private fun createNotificationChannel(context: Context){
+
+    //create notification channel
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val name = "NotificationChannelName"
+        val descriptionText = "NotificationDescription"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel("CHANNEL_ID", name, importance).apply {
+            description = descriptionText
+        }
+
+        //register the notification channel
+        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+}
+
+private fun setOneTimeNotification(context: Context, reminderTimeMillis: Long){
+    val workManager = WorkManager.getInstance(context)
+
+    val contstraints = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build()
+
+    var delay = reminderTimeMillis - System.currentTimeMillis()
+
+    val notificationWorker = OneTimeWorkRequestBuilder<NotificationWorker>()
+        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+        .setConstraints(contstraints)
+        .build()
+
+    workManager.enqueue(notificationWorker)
+
+    //Monitoring for state of work
+    workManager.getWorkInfoByIdLiveData(notificationWorker.id)
+        .observeForever{workInfo ->
+            if(workInfo.state == WorkInfo.State.SUCCEEDED){
+                createSimpleNotification(context)
+            }
+        }
+
+}
+
+fun createSimpleNotification(context: Context) {
+    val notificationId = 1
+    val builder = NotificationCompat.Builder(context, "CHANNEL_ID")
+        .setSmallIcon(R.drawable.ic_launcher_background)
+        .setContentTitle("Success!")
+        .setContentText("Fuck this shit!")
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+    with(from(context)){
+        //notificationID has to be unique
+        notify(notificationId, builder.build())
+    }
 }

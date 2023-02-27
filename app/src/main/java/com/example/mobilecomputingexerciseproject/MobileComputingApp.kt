@@ -22,7 +22,7 @@ fun MobileComputingApp(
 ) {
     NavHost(
         navController = appState.navController,
-        startDestination = "login"
+        startDestination = "createReminder"
     ) {
         composable(route = "login") {
             Login(navController = appState.navController)

@@ -1,5 +1,10 @@
 package com.example.mobilecomputingexerciseproject.ui.login
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.os.Build
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,13 +18,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavController
+import com.example.mobilecomputingexerciseproject.MainActivity
+import com.example.mobilecomputingexerciseproject.R
 
 @Composable
 fun PinLogin (
@@ -87,7 +96,7 @@ fun PinLogin (
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = { navController.navigate("home") },
+                onClick = { },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape( corner = CornerSize(20.dp)),
                 contentPadding = PaddingValues(20.dp),
@@ -100,3 +109,24 @@ fun PinLogin (
         }
     }
 }
+
+/*    val context = LocalContext.current
+    val notificationManager = NotificationManagerCompat.from(context)
+    val channelId = "MyChannelId"
+    val channelName = "MyChannelName"
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    val intent = Intent(context, MainActivity::class.java)
+    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+    val notificationBuilder = NotificationCompat.Builder(context, channelId)
+        .setSmallIcon(R.drawable.ic_launcher_background)
+        .setContentTitle("Reminder")
+        .setContentText("Your reminder message")
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
+
+    val notificationId = 1*/
