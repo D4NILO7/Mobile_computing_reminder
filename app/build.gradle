@@ -92,4 +92,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.0.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
+
+/*    //REFRESH
+    implementation 'com.google.accompanist:accompanist-swiperefresh:0.27.0'*/
 }

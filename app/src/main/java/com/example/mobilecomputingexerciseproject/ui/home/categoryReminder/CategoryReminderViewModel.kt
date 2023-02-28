@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.*
 
 
 class CategoryReminderViewModel : ViewModel(){
@@ -38,6 +39,8 @@ class CategoryReminderViewModel : ViewModel(){
 
         db.collection("reminders")
             .whereEqualTo("userId",fAuth.uid.toString())
+            .whereLessThan("reminderTime", Date())
+            //.whereEqualTo("reminderSeen", false)
             .orderBy("reminderTime", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { documents ->

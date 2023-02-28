@@ -109,24 +109,3 @@ fun PinLogin (
         }
     }
 }
-
-/*    val context = LocalContext.current
-    val notificationManager = NotificationManagerCompat.from(context)
-    val channelId = "MyChannelId"
-    val channelName = "MyChannelName"
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-        notificationManager.createNotificationChannel(channel)
-    }
-
-    val intent = Intent(context, MainActivity::class.java)
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-
-    val notificationBuilder = NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.ic_launcher_background)
-        .setContentTitle("Reminder")
-        .setContentText("Your reminder message")
-        .setContentIntent(pendingIntent)
-        .setAutoCancel(true)
-
-    val notificationId = 1*/

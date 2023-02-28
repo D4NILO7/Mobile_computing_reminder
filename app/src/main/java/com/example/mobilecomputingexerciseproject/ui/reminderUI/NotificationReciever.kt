@@ -1,5 +1,5 @@
 package com.example.mobilecomputingexerciseproject.ui.reminderUI
-
+/*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,4 +13,4 @@ class NotificationReciever(
         // show notification here
         createSimpleNotification(context)
     }
-}
+}*/

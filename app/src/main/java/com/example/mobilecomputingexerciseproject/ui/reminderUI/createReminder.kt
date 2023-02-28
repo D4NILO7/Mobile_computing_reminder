@@ -3,7 +3,6 @@ package com.example.mobilecomputingexerciseproject.ui.reminderUI
 import android.app.*
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.DatePicker
@@ -15,13 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.NotificationManagerCompat.from
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavController
 import androidx.work.*
 import com.example.mobilecomputingexerciseproject.R
@@ -30,7 +28,6 @@ import com.example.mobilecomputingexerciseproject.ui.uiElements.CreateTopBar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.delay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,6 +41,7 @@ fun CreateReminder(
     val message = remember { mutableStateOf("") }
     val mDate = remember { mutableStateOf("") }
     val mTime = remember { mutableStateOf("") }
+    val mCheckedState = remember { mutableStateOf(false) }
     val listItems = arrayOf("High", "Medium", "Low")
     var selectedItem by remember {
         mutableStateOf(listItems[1])
@@ -122,15 +120,28 @@ fun CreateReminder(
     Column(modifier = Modifier.fillMaxHeight()) {
         CreateTopBar(navController = navController, "Add reminder",
             logOutIcon = false,
-            submitButton = checkFields(message.value, mDate.value, mTime.value),
+            submitButton = checkFields(
+                message.value,
+                mDate.value,
+                mTime.value
+            ) or (!mCheckedState.value and (message.value != "")),
             submitAction = {
                 submitReminder(
                     message = message.value,
                     reminderPriority = selectedItem,
-                    reminderTime = createReminderDate(mDate.value, mTime.value),
-                    navController = navController
+                    reminderTime = if(mCheckedState.value){createReminderDate(mDate.value, mTime.value)}else{Date()},
+                    navController = navController,
+                    notification = mCheckedState.value
                 )
-                setOneTimeNotification(context = mContext, createReminderDate(mDate.value, mTime.value).time.toLong())
+                if(mCheckedState.value){
+                    setOneTimeNotification(
+                        navController= navController,
+                        context = mContext,
+                        createReminderDate(mDate.value, mTime.value).time.toLong(),
+                        title = message.value,
+                        dueTime = mDate.value
+                    )
+                }
             })
 
         Column(
@@ -156,49 +167,80 @@ fun CreateReminder(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    mTimePickerDialog.show()
-                },
-                border = BorderStroke(1.dp, Color(0xFF00C6CF)),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF242424)),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Time", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    Spacer(Modifier.weight(1f))
-                    Text(text = mTime.value, fontSize = 24.sp, modifier = Modifier.padding(8.dp))
-                }
-
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    mDatePickerDialog.show()
-                },
-                border = BorderStroke(1.dp, Color(0xFF00C6CF)),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Date", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    Spacer(Modifier.weight(1f))
                     Text(
-                        text = mDate.value,
-                        fontSize = 24.sp,
-                        color = Color(0xFF00C6CF),
-                        modifier = Modifier.padding(8.dp)
+                        text = "Notification",
+                        style = TextStyle(fontSize = 24.sp),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Switch(
+                        checked = mCheckedState.value,
+                        onCheckedChange = { mCheckedState.value = it }
                     )
                 }
+            }
 
+            if (mCheckedState.value) {
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        mTimePickerDialog.show()
+                    },
+                    border = BorderStroke(1.dp, Color(0xFF00C6CF)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Time", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                        Spacer(Modifier.weight(1f))
+                        Text(
+                            text = mTime.value,
+                            fontSize = 24.sp,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        mDatePickerDialog.show()
+                    },
+                    border = BorderStroke(1.dp, Color(0xFF00C6CF)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Date", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                        Spacer(Modifier.weight(1f))
+                        Text(
+                            text = mDate.value,
+                            fontSize = 24.sp,
+                            color = Color(0xFF00C6CF),
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -228,7 +270,13 @@ fun CreateReminder(
                         value = selectedItem,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text(text = "Priority", fontSize = 16.sp, color = Color.White) },
+                        label = {
+                            Text(
+                                text = "Priority",
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = expanded
@@ -258,6 +306,7 @@ fun CreateReminder(
                                 Text(text = selectedOption, fontSize = 24.sp)
                             }
                         }
+
                     }
                 }
             }
@@ -294,7 +343,8 @@ private fun submitReminder(
     message: String,
     reminderTime: java.util.Date,
     reminderPriority: String,
-    navController: NavController
+    navController: NavController,
+    notification: Boolean
 ) {
 
     var fAuth = FirebaseAuth.getInstance()
@@ -306,7 +356,7 @@ private fun submitReminder(
         creationTime = java.util.Date(),
         reminderTime = reminderTime,
         userId = fAuth.uid.toString(),
-        reminderSeen = false,
+        reminderSeen = notification,
         reminderPriority = reminderPriority,
         reminderId = ""
     )
@@ -323,10 +373,10 @@ private fun submitReminder(
 
 }
 
-private fun createNotificationChannel(context: Context){
+private fun createNotificationChannel(context: Context) {
 
     //create notification channel
-    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val name = "NotificationChannelName"
         val descriptionText = "NotificationDescription"
         val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -335,12 +385,13 @@ private fun createNotificationChannel(context: Context){
         }
 
         //register the notification channel
-        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager: NotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 }
 
-private fun setOneTimeNotification(context: Context, reminderTimeMillis: Long){
+private fun setOneTimeNotification(navController: NavController, context: Context, reminderTimeMillis: Long,title: String, dueTime: String) {
     val workManager = WorkManager.getInstance(context)
 
     val contstraints = Constraints.Builder()
@@ -358,23 +409,24 @@ private fun setOneTimeNotification(context: Context, reminderTimeMillis: Long){
 
     //Monitoring for state of work
     workManager.getWorkInfoByIdLiveData(notificationWorker.id)
-        .observeForever{workInfo ->
-            if(workInfo.state == WorkInfo.State.SUCCEEDED){
-                createSimpleNotification(context)
+        .observeForever { workInfo ->
+            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                createSimpleNotification(context,title, dueTime)
+                navController.navigate("home")
             }
         }
 
 }
 
-fun createSimpleNotification(context: Context) {
+fun createSimpleNotification(context: Context, title: String, dueTime: String) {
     val notificationId = 1
     val builder = NotificationCompat.Builder(context, "CHANNEL_ID")
         .setSmallIcon(R.drawable.ic_launcher_background)
-        .setContentTitle("Success!")
-        .setContentText("Fuck this shit!")
+        .setContentTitle(title)
+        .setContentText(dueTime)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-    with(from(context)){
+    with(from(context)) {
         //notificationID has to be unique
         notify(notificationId, builder.build())
     }

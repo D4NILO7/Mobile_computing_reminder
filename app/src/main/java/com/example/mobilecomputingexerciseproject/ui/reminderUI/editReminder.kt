@@ -378,6 +378,4 @@ private fun submitReminder(
         .addOnFailureListener { e ->
             Log.w(ContentValues.TAG, "Error adding document", e)
         }
-
-
 }
