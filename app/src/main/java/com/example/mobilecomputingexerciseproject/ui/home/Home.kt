@@ -25,6 +25,8 @@ fun Home(
         mutableStateOf(false)
     }
 
+    var allButton = remember{ mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.padding(bottom = 24.dp),
         floatingActionButton = {

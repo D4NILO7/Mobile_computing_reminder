@@ -48,7 +48,6 @@ fun CreateReminder(
     }
 
     //PICK REMINDER TIME
-
     val mContext = LocalContext.current
 
     // Declaring and initializing a calendar
@@ -139,7 +138,8 @@ fun CreateReminder(
                         context = mContext,
                         createReminderDate(mDate.value, mTime.value).time.toLong(),
                         title = message.value,
-                        dueTime = mDate.value
+                        dueTime = mDate.value,
+                        priority = selectedItem
                     )
                 }
             })
@@ -391,7 +391,7 @@ private fun createNotificationChannel(context: Context) {
     }
 }
 
-private fun setOneTimeNotification(navController: NavController, context: Context, reminderTimeMillis: Long,title: String, dueTime: String) {
+private fun setOneTimeNotification(navController: NavController, context: Context, reminderTimeMillis: Long,title: String, dueTime: String, priority: String) {
     val workManager = WorkManager.getInstance(context)
 
     val contstraints = Constraints.Builder()
@@ -411,19 +411,18 @@ private fun setOneTimeNotification(navController: NavController, context: Contex
     workManager.getWorkInfoByIdLiveData(notificationWorker.id)
         .observeForever { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                createSimpleNotification(context,title, dueTime)
+                createSimpleNotification(context, title, dueTime, priority)
                 navController.navigate("home")
             }
         }
-
 }
 
-fun createSimpleNotification(context: Context, title: String, dueTime: String) {
+fun createSimpleNotification(context: Context, title: String, dueTime: String, priority: String) {
     val notificationId = 1
     val builder = NotificationCompat.Builder(context, "CHANNEL_ID")
-        .setSmallIcon(R.drawable.ic_launcher_background)
+        .setSmallIcon(R.drawable.bell)
         .setContentTitle(title)
-        .setContentText(dueTime)
+        .setContentText("$dueTime, Priority: $priority")
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
     with(from(context)) {
