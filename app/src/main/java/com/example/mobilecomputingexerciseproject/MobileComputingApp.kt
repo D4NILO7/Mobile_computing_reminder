@@ -11,6 +11,7 @@ import com.example.mobilecomputingexerciseproject.ui.home.Home
 import com.example.mobilecomputingexerciseproject.ui.login.Login
 import com.example.mobilecomputingexerciseproject.ui.login.PinLogin
 import com.example.mobilecomputingexerciseproject.ui.login.RegisterUser
+import com.example.mobilecomputingexerciseproject.ui.maps.ReminderLocationMap
 import com.example.mobilecomputingexerciseproject.ui.profile.Profile
 import com.example.mobilecomputingexerciseproject.ui.reminderUI.CreateReminder
 import com.example.mobilecomputingexerciseproject.ui.reminderUI.EditReminder
@@ -41,6 +42,9 @@ fun MobileComputingApp(
         }
         composable(route = "createReminder") {
             CreateReminder(navController = appState.navController)
+        }
+        composable(route = "map") {
+            ReminderLocationMap(navController = appState.navController)
         }
         composable(
             route = "editReminder?reminderId={reminderId}",

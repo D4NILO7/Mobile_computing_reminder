@@ -8,6 +8,8 @@ import android.util.Log
 import android.widget.DatePicker
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -310,6 +312,23 @@ fun CreateReminder(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            //--------------------------------------------------------
+
+            Button(
+                onClick = {},
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(corner = CornerSize(20.dp)),
+                contentPadding = PaddingValues(20.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF00C6CF),
+                    contentColor = Color.Black
+                )
+            ) {
+                Text(text = "Add location")
+            }
+
         }
     }
 }
