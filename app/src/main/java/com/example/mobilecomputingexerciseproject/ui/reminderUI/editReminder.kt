@@ -359,8 +359,8 @@ private fun submitReminder(
 
     val reminder = Reminder(
         message = message,
-        locationX = "",
-        locationY = "",
+        locationX = 0.0,
+        locationY = 0.0,
         creationTime = Date(),
         reminderTime = reminderTime,
         userId = fAuth.uid.toString(),

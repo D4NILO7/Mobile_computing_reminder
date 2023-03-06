@@ -26,7 +26,9 @@ import androidx.navigation.NavController
 import androidx.work.*
 import com.example.mobilecomputingexerciseproject.R
 import com.example.mobilecomputingexerciseproject.reminder.Reminder
+import com.example.mobilecomputingexerciseproject.ui.maps.ReminderLocationMap
 import com.example.mobilecomputingexerciseproject.ui.uiElements.CreateTopBar
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -44,6 +46,12 @@ fun CreateReminder(
     val mDate = remember { mutableStateOf("") }
     val mTime = remember { mutableStateOf("") }
     val mCheckedState = remember { mutableStateOf(false) }
+    val latlng = navController
+        .currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<LatLng>("location_data")
+        ?.value
+
     val listItems = arrayOf("High", "Medium", "Low")
     var selectedItem by remember {
         mutableStateOf(listItems[1])
@@ -132,7 +140,9 @@ fun CreateReminder(
                     reminderPriority = selectedItem,
                     reminderTime = if(mCheckedState.value){createReminderDate(mDate.value, mTime.value)}else{Date()},
                     navController = navController,
-                    notification = mCheckedState.value
+                    notification = mCheckedState.value,
+                    latitude = latlng?.latitude ?: 0.0,
+                    longitude = latlng?.longitude ?: 0.0,
                 )
                 if(mCheckedState.value){
                     setOneTimeNotification(
@@ -315,9 +325,8 @@ fun CreateReminder(
 
             Spacer(modifier = Modifier.height(24.dp))
             //--------------------------------------------------------
-
             Button(
-                onClick = {},
+                onClick = {navController.navigate("map")},
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(corner = CornerSize(20.dp)),
                 contentPadding = PaddingValues(20.dp),
@@ -326,9 +335,8 @@ fun CreateReminder(
                     contentColor = Color.Black
                 )
             ) {
-                Text(text = "Add location")
+                Text(text = latlng?.longitude.toString())
             }
-
         }
     }
 }
@@ -363,15 +371,17 @@ private fun submitReminder(
     reminderTime: java.util.Date,
     reminderPriority: String,
     navController: NavController,
-    notification: Boolean
+    notification: Boolean,
+    latitude: Double,
+    longitude: Double
 ) {
 
     var fAuth = FirebaseAuth.getInstance()
 
     val reminder = Reminder(
         message = message,
-        locationX = "",
-        locationY = "",
+        locationX = latitude,
+        locationY = longitude,
         creationTime = java.util.Date(),
         reminderTime = reminderTime,
         userId = fAuth.uid.toString(),

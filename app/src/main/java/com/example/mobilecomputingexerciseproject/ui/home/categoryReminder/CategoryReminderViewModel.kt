@@ -48,8 +48,8 @@ class CategoryReminderViewModel : ViewModel(){
                     reminder = document.toObject(Reminder::class.java)
                     var temporaryReminder = Reminder(
                         reminder?.message.toString(),
-                        reminder?.locationX.toString(),
-                        reminder?.locationY.toString(),
+                        reminder!!.locationX,
+                        reminder!!.locationY,
                         reminder!!.creationTime,
                         reminder!!.reminderTime,
                         reminder?.userId.toString(),
