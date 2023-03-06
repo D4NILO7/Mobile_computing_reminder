@@ -57,6 +57,8 @@ fun CreateReminder(
         mutableStateOf(listItems[1])
     }
 
+    //LOCATION NOTY TRIGGER
+
     //PICK REMINDER TIME
     val mContext = LocalContext.current
 

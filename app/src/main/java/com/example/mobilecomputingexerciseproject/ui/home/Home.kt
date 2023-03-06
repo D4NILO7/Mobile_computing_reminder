@@ -25,8 +25,6 @@ fun Home(
         mutableStateOf(false)
     }
 
-    var allButton = remember{ mutableStateOf(false) }
-
     Scaffold(
         modifier = Modifier.padding(bottom = 24.dp),
         floatingActionButton = {
@@ -71,14 +69,14 @@ fun Home(
                             }) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.Start
                             ) {
                                 Icon(
                                     painter = rememberVectorPainter(Icons.Filled.Person),
                                     contentDescription = "ProfileIcon",
                                 )
                                 Text(
-                                    "Profile",
+                                    " Profile",
                                     modifier = Modifier
                                         .width(100.dp)
 
@@ -93,7 +91,7 @@ fun Home(
                             }) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.Start
                             ) {
                                 Icon(
                                     painter = rememberVectorPainter(Icons.Filled.Add),
@@ -108,9 +106,11 @@ fun Home(
                             }
                         }
 
+                        //---------------------------------------------------------------------
+
                         DropdownMenuItem(
                             onClick = {
-                                navController.navigate("login")
+                                navController.navigate("nearbyReminders")
                                 dropDownMenuExpanded = false
                             }) {
                             Row(
@@ -118,12 +118,33 @@ fun Home(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Icon(
+                                    painter = rememberVectorPainter(Icons.Filled.LocationOn),
+                                    contentDescription = "nearbyReminders"
+                                )
+                                Text(
+                                    " Reminder map",
+                                    modifier = Modifier
+                                        .width(150.dp),
+                                )
+                            }
+                        }
+                        //---------------------------------------------------------------
+                        DropdownMenuItem(
+                            onClick = {
+                                navController.navigate("login")
+                                dropDownMenuExpanded = false
+                            }) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Icon(
                                     painter = rememberVectorPainter(Icons.Filled.ExitToApp),
                                     contentDescription = "LogoutIcon",
                                     tint = Color.Red
                                 )
                                 Text(
-                                    "Log Out",
+                                    " Log Out",
                                     modifier = Modifier
                                         .width(100.dp),
                                     color = Color.Red,

@@ -36,7 +36,6 @@ fun CategoryReminder(
 ) {
     val viewModel: CategoryReminderViewModel = viewModel()
     val viewState by viewModel.state.collectAsState()
-
     Column(modifier = Modifier.fillMaxWidth()) {
         ReminderList(
             list = viewState.reminders,
