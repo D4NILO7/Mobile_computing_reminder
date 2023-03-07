@@ -1,8 +1,10 @@
 package com.example.mobilecomputingexerciseproject.ui.reminderUI
 
 import android.app.*
+import android.content.BroadcastReceiver
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.DatePicker
@@ -11,6 +13,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,11 +51,14 @@ fun CreateReminder(
     val mDate = remember { mutableStateOf("") }
     val mTime = remember { mutableStateOf("") }
     val mCheckedState = remember { mutableStateOf(false) }
-    val latlng = navController
-        .currentBackStackEntry
-        ?.savedStateHandle
-        ?.getLiveData<LatLng>("location_data")
-        ?.value
+
+    val latlng = navController.currentBackStackEntry?.savedStateHandle?.get<LatLng>("key1")
+    val value2 = navController.currentBackStackEntry?.savedStateHandle?.get<String>("key2")
+
+
+    if (value2 != null) {
+        message.value = value2
+    };
 
     val listItems = arrayOf("High", "Medium", "Low")
     var selectedItem by remember {
@@ -140,15 +148,19 @@ fun CreateReminder(
                 submitReminder(
                     message = message.value,
                     reminderPriority = selectedItem,
-                    reminderTime = if(mCheckedState.value){createReminderDate(mDate.value, mTime.value)}else{Date()},
+                    reminderTime = if (mCheckedState.value) {
+                        createReminderDate(mDate.value, mTime.value)
+                    } else {
+                        Date()
+                    },
                     navController = navController,
                     notification = mCheckedState.value,
                     latitude = latlng?.latitude ?: 0.0,
                     longitude = latlng?.longitude ?: 0.0,
                 )
-                if(mCheckedState.value){
+                if (mCheckedState.value) {
                     setOneTimeNotification(
-                        navController= navController,
+                        navController = navController,
                         context = mContext,
                         createReminderDate(mDate.value, mTime.value).time.toLong(),
                         title = message.value,
@@ -180,6 +192,32 @@ fun CreateReminder(
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+            //--------------------------------------------------------
+            Button(
+                onClick = { navController.navigate("map?reminderMessage=${message.value}") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF242424),
+                    contentColor = Color.White
+                )
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(text = "Add location", fontSize = 24.sp, modifier = Modifier.padding(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        tint = Color(0xFF00C6CF),
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Column(
                 modifier = Modifier
@@ -193,8 +231,8 @@ fun CreateReminder(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Notification",
-                        style = TextStyle(fontSize = 24.sp),
+                        text = " Notification",
+                        style = TextStyle(fontSize = 24.sp, color = Color.White),
                         modifier = Modifier.padding(16.dp)
                     )
                     Spacer(Modifier.weight(1f))
@@ -324,21 +362,6 @@ fun CreateReminder(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-            //--------------------------------------------------------
-            Button(
-                onClick = {navController.navigate("map")},
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(corner = CornerSize(20.dp)),
-                contentPadding = PaddingValues(20.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF00C6CF),
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(text = latlng?.longitude.toString())
-            }
         }
     }
 }
@@ -422,7 +445,14 @@ private fun createNotificationChannel(context: Context) {
     }
 }
 
-private fun setOneTimeNotification(navController: NavController, context: Context, reminderTimeMillis: Long,title: String, dueTime: String, priority: String) {
+private fun setOneTimeNotification(
+    navController: NavController,
+    context: Context,
+    reminderTimeMillis: Long,
+    title: String,
+    dueTime: String,
+    priority: String
+) {
     val workManager = WorkManager.getInstance(context)
 
     val contstraints = Constraints.Builder()

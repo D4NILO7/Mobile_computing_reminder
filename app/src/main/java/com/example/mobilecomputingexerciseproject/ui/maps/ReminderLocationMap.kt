@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.example.mobilecomputingexerciseproject.reminder.Reminder
+import com.example.mobilecomputingexerciseproject.ui.reminderUI.CreateReminder
 import com.example.mobilecomputingexerciseproject.util.rememberMapViewWithLifecycle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,7 +24,8 @@ import java.util.*
 
 @Composable
 fun ReminderLocationMap(
-    navController: NavController
+    navController: NavController,
+    reminderMessage: String
 ) {
     val mapView = rememberMapViewWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
@@ -40,7 +42,7 @@ fun ReminderLocationMap(
                 map.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(location, 12f)
                 )
-                setMapLongClick(map = map, navController = navController)
+                setMapLongClick(map = map, navController = navController, reminderMessage)
             }
 
         }
@@ -49,7 +51,8 @@ fun ReminderLocationMap(
 
 private fun setMapLongClick(
     map: GoogleMap,
-    navController: NavController
+    navController: NavController,
+    reminderMessage: String
 ) {
     map.setOnMapClickListener { latlng ->
         val snippet = String.format(
@@ -62,9 +65,8 @@ private fun setMapLongClick(
         map.addMarker(
             MarkerOptions().position(latlng).title("Reminder location").snippet(snippet)
         ).apply {
-            navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.set("location_data", latlng)
+            navController.previousBackStackEntry?.savedStateHandle?.set("key1", latlng)
+            navController.previousBackStackEntry?.savedStateHandle?.set("key2", reminderMessage)
         }
     }
 }

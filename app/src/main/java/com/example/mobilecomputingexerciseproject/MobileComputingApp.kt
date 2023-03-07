@@ -16,6 +16,7 @@ import com.example.mobilecomputingexerciseproject.ui.maps.ReminderLocationMap
 import com.example.mobilecomputingexerciseproject.ui.profile.Profile
 import com.example.mobilecomputingexerciseproject.ui.reminderUI.CreateReminder
 import com.example.mobilecomputingexerciseproject.ui.reminderUI.EditReminder
+import com.google.android.gms.maps.model.LatLng
 
 
 @Composable
@@ -24,7 +25,7 @@ fun MobileComputingApp(
 ) {
     NavHost(
         navController = appState.navController,
-        startDestination = "home"
+        startDestination = "login"
     ) {
         composable(route = "login") {
             Login(navController = appState.navController)
@@ -41,14 +42,31 @@ fun MobileComputingApp(
         composable(route = "pinLogin") {
             PinLogin(navController = appState.navController)
         }
-        composable(route = "createReminder") {
-            CreateReminder(navController = appState.navController)
-        }
-        composable(route = "map") {
-            ReminderLocationMap(navController = appState.navController)
-        }
         composable(route = "nearbyReminders") {
             NearbyReminders(navController = appState.navController)
+        }
+        composable(
+            route = "createReminder"
+        ) {
+            CreateReminder(navController = appState.navController)
+        }
+        composable(
+            route = "map?reminderMessage={reminderMessage}",
+            arguments = listOf(
+                navArgument("reminderMessage") {
+                    defaultValue = ""
+                    type = NavType.StringType
+                }
+            )
+        ) {
+                navBackStackEntry ->
+            /* Extracting the id from the route */
+            val reminderId = navBackStackEntry.arguments?.getString("reminderMessage")
+            /* We check if is null */
+            reminderId?.let {
+                ReminderLocationMap(navController = appState.navController, reminderMessage = it)
+            }
+
         }
         composable(
             route = "editReminder?reminderId={reminderId}",
@@ -58,8 +76,7 @@ fun MobileComputingApp(
                     type = NavType.StringType
                 }
             )
-        ) {
-                navBackStackEntry ->
+        ) { navBackStackEntry ->
             /* Extracting the id from the route */
             val reminderId = navBackStackEntry.arguments?.getString("reminderId")
             /* We check if is null */
